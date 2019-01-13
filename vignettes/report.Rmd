@@ -141,3 +141,7 @@ ggplot(df, aes(Firstseen_UTC, Malware)) +
   geom_line(aes(color = Malware), size = 1) +
   theme_minimal()
 ```
+
+### Conclusión
+
+Tras analizar los datos se ha podido observar como el auge más grande de este tipo de ataques sucedió en 2016 donde hay la mayor cantidad de registros, pero también hay que destacar que podrían haber muchos otros casos todavía no registrados en la actualidad. Se puede concluir que los paises donde localizan la mayoria de amenazas son Estados Unidos y Rusia aunque la mayor parte de ellas ya no están activas por dejar de ser efectivas cuando son registradas. También queremos reflexionar que aún no disponer de muchos datos del último año, eso no se traduce en una reducción de la amenaza que supone el ransomware como malware.
