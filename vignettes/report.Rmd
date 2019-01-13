@@ -129,7 +129,7 @@ Ademas de poder conocer el estado de las amenazas y del tipo de malware utilizad
 
 ```{r, fig.width=8, fig.height=4, plot_bar, include=TRUE}
 ggplot(data=df, aes(x= format(as.Date(Firstseen_UTC), "%Y"), fill=Status)) + 
-  geom_histogram(stat="Count")
+  geom_histogram(stat="Count") + xlab("Número de amenazas durante los diferentes años")
 ```
 
 ### 3.3 Lineal
