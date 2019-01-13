@@ -4,32 +4,29 @@ Group Assignment base repository for the Data Driven Security subject of the [Cy
 
 ## Project Title
 
-Ransomware en mundo
+Ransomware en el mundo
 
-### Requirements
 
-  - Requirement 1
-  - Requirement 2
-  
-  
 ### Project Description
 
-Apartir de una bbdd actualizada de los distintos tipos de Ransomware registrados en el mundo hasta el dia de hoy. Se muestra en entorno dinamico el impacto del Ransomware en el mundo Prtir de los filtros que el usuario elija.
+A partir de una bbdd actualizada de los distintos tipos de Ransomware registrados en el mundo hasta el día de hoy. Se mostrará el impacto del Ransomware en el mundo.
 
 ### Goals
 
-Crear un entorno dinamico para mostrar el impacto de Ransomware
+Mostrar en gráficos en mapa los datos obtenidos.
 
 ### Data acquisition
 
-https://ransomwaretracker.abuse.ch/feeds/csv/
+Los datos serán obtenidos de la página web siguiente: https://ransomwaretracker.abuse.ch/feeds/csv/
 
 ### Cleansing and transformations
 
-Se decidio filtrar las columnas necesarias para proyecto que son: "Firstseen_UTC", "Threat", "Malware", "Status" y "Country". Tambien cabe destacar que se modifico los datos de la columna de Firstseen_UTC a un formato de solo fecha.
+Se decidió filtrar las columnas necesarias para el proyecto que son: "Firstseen_UTC", "Threat", "Malware", "Status" y "Country". También cabe destacar que se modificaron los datos de la columna de Firstseen_UTC a un formato de solo fecha.
 
 ### Data analysis
 
-
+Para realizar el análisis se utilizarán como apoyos gráficos de mapas y de barras para poder tener una mejor visión del impacto.
 
 ### Results / Conclusions.
+
+Se ha podido observar como el auge más grande de este tipo de ataques sucedió en 2016 donde hay la mayor cantidad de registros, pero también hay que destacar que podrían haber muchos otros casos todavía no registrados en la actualidad. Se puede concluir que los paises donde más se localizan son Estados Unidos y Rusia.

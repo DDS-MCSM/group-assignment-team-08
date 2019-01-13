@@ -25,7 +25,7 @@ source("../R/code.R")
 
 ## 2. Datos estructurados
 
-Se ha definido la siguiente función para la obtención del data frame con el que se realizará el análisis. Esta función obtiene los datos en formato CSV de la web https://ransomwaretracker.abuse.ch/feeds/csv/. Esta contiene los datos de los malware de tipo ransomware que se han encontrado hasta la fecha, donde nos da información relacionada con su estado, tipo de amenaza, variedad de malware utilizado y país donde se ha localizado.
+Se ha definido la siguiente función para la obtención del Data Frame con el que se realizará el análisis. Esta función obtiene los datos en formato CSV de la web https://ransomwaretracker.abuse.ch/feeds/csv/. Este CSV contiene una gran variedad de datos sobre los Ransomwares, de los cuales solo se utilizaran los el tipo Malware que se han encontrado hasta la fecha, donde nos da información relacionada con su estado, tipo de amenaza, variedad de malware utilizado y país donde se ha localizado. Estos datos fueron tratados y estructurados en un Data Frame, para su posterior manipulación.
 
 ```{r get_df}
 df <- obtenerDf()
