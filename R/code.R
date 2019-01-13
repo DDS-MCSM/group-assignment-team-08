@@ -9,6 +9,8 @@
 
 if (!require(rworldmap)) install.packages('rworldmap')
 if (!require(ggmap)) install.packages('ggmap')
+if (!require(RColorBrewer)) install.packages('RColorBrewer')
+library(RColorBrewer)
 library(ggmap)
 library(rworldmap)
 
@@ -27,6 +29,5 @@ obtenerDf <- function(){
   
   dataFinal <- dataFinal[!apply(dataFinal, 1, function(x) any(x=="")),]
   dataFinal <- dataFinal[!is.na(dataFinal$Firstseen_UTC),]
-  
   return(dataFinal)
 }

@@ -42,29 +42,85 @@ head(df, n=3)
 Se mostraran 3 tipos de graficos
 
 ### 3.1	Mundiales
+Se hace un mach de los paises con los de la biblioteca **joinCountryData2Map**. Pero hay algunos paises que no se hacen bien el mach, puede que sea que la df tenga algun pais que no este correctamente codificado en **ISO2**
 
-Primero se mostrara tres graficos mundiales:
-
-```{r, fig.width=8, fig.height=4, mund_1, include=TRUE}
-library(RColorBrewer)
+```{r, fig.width=8, fig.height=4, datos_mund, include=TRUE}
 sPDF <- joinCountryData2Map(df,
                             joinCode = "ISO2",
                             nameJoinColumn = "Country",
                             verbose = F)
-
+sPDF.ps <- joinCountryData2Map(df[df$Threat == "Payment Site",],
+                               joinCode = "ISO2",
+                               nameJoinColumn = "Country",
+                               verbose = F)
+sPDF.c2 <- joinCountryData2Map(df[df$Threat == "C2",],
+                               joinCode = "ISO2",
+                               nameJoinColumn = "Country",
+                               verbose = F)
+sPDF.ds <- joinCountryData2Map(df[df$Threat == "Distribution Site",],
+                               joinCode = "ISO2",
+                               nameJoinColumn = "Country",
+                               verbose = F)
+sPDF.on <- joinCountryData2Map(df[df$Status == "online",],
+                               joinCode = "ISO2",
+                               nameJoinColumn = "Country",
+                               verbose = F)
+sPDF.of <- joinCountryData2Map(df[df$Status == "offline",],
+                               joinCode = "ISO2",
+                               nameJoinColumn = "Country",
+                               verbose = F)
+sPDF.un <- joinCountryData2Map(df[df$Status == "unknown",],
+                               joinCode = "ISO2",
+                               nameJoinColumn = "Country",
+                               verbose = F)
 # plot the spatialDataFrame
 colourPalette <- brewer.pal(5,'RdYlGn')
-mapCountryData(sPDF, nameColumnToPlot = "Malware", colourPalette=colourPalette, catMethod=c(0,20,40,60,80,100))
 ```
+
+Se mostrara tres tipo de graficos mundiales:
+
+#### 3.1.1	Threat
+
+```{r, fig.width=8, fig.height=4, mund_1, include=TRUE}
+mapCountryData(sPDF, nameColumnToPlot = "Threat", mapTitle = "Threat - General", colourPalette=colourPalette)
+mapCountryData(sPDF.ps, nameColumnToPlot = "Threat", mapTitle = "Threat - Payment Site", colourPalette=colourPalette)
+mapCountryData(sPDF.c2, nameColumnToPlot = "Threat", mapTitle = "Threat - C2", colourPalette=colourPalette)
+mapCountryData(sPDF.ds, nameColumnToPlot = "Threat", mapTitle = "Threat - Distribution Site", colourPalette=colourPalette)
+```
+Como se puede observar en la imagen clobal Solo aparcen 2 tipos de datos, cunod en realidad existen 3 (las siguentes 3 imagenes que se muestran). No se llego a entender el por que suscede esto se tiene 2 teorias.
+1. Que se dibuje por capas y por lo cual no se muestren alginas
+2. Que en funcion de la proporcion, se decarten los datos que se consideren insignificantes.
+
+Se cree que la razon mas logica es la segunda, esta es la proporcion:
+
+```{r, mund_1_tabla, include=TRUE}
+table(df$Threat)
+```
+
+#### 3.1.2	Status
 
 ```{r, fig.width=8, fig.height=4, mund_2, include=TRUE}
-mapCountryData(sPDF, nameColumnToPlot = "Threat", colourPalette=colourPalette, catMethod=c(0,20,40,60,80,100))
+mapCountryData(sPDF, nameColumnToPlot = "Status", mapTitle = "Status - General", colourPalette=colourPalette)
+mapCountryData(sPDF.on, nameColumnToPlot = "Status", mapTitle = "Status - online", colourPalette=colourPalette)
+mapCountryData(sPDF.of, nameColumnToPlot = "Status", mapTitle = "Status - offline", colourPalette=colourPalette)
+mapCountryData(sPDF.un, nameColumnToPlot = "Status", mapTitle = "Status - unknown", colourPalette=colourPalette)
 ```
+Ocurre lo mismo que en el grafico anterior.
+
+```{r, mund_2_tabla, include=TRUE}
+table(df$Status)
+```
+
+#### 3.1.3	Malaware
 
 ```{r, fig.width=8, fig.height=4, mund_3, include=TRUE}
-mapCountryData(sPDF, nameColumnToPlot = "Status", colourPalette=colourPalette, catMethod=c(0,20,40,60,80,100))
+mapCountryData(sPDF, nameColumnToPlot = "Malware", colourPalette=colourPalette)
 ```
+En este se nota mas el tema de la proporcionalidad
 
+```{r, mund_3_tabla, include=TRUE}
+table(df$Malware)
+```
 ### 3.2	De Barras
 
 Este grafico de barras relaciona, cada malware con su threat y su estado:
