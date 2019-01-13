@@ -1,65 +1,85 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Ransomware en mundo"
+author: "Rodrigo Vera & Jhonatan"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+A partir de una base de datos actualizada de los distintos tipos de ransomware registrados en el mundo hasta el día de hoy. Se muestra en un entorno grafico el impacto del ransomware en el mundo.
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+## 1. Biblioteca
 
-## Vignette Info
+Para llevar acabo esta practica se utiliza esta biblioteca:
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r file_load, error=FALSE}
+source("../R/code.R")
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+## 2. Datos estructurados
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+Para obtener un data frame, se utiliza esta funcion:
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r get_df}
+df <- obtenerDf()
 ```
 
-Also a quote using `>`:
+Se obtiene un data frame de **`r length(df$Country)`** elementos. Que tienen la siguinete estructura:
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```{r, echo=FALSE}
+head(df, n=3)
+```
+
+## 3. Figuras
+
+Se mostraran 3 tipos de graficos
+
+### 3.1	Mundiales
+
+Primero se mostrara tres graficos mundiales:
+
+```{r, fig.width=8, fig.height=4, mund_1, include=TRUE}
+library(RColorBrewer)
+sPDF <- joinCountryData2Map(df,
+                            joinCode = "ISO2",
+                            nameJoinColumn = "Country",
+                            verbose = F)
+
+# plot the spatialDataFrame
+colourPalette <- brewer.pal(5,'RdYlGn')
+mapCountryData(sPDF, nameColumnToPlot = "Malware", colourPalette=colourPalette, catMethod=c(0,20,40,60,80,100))
+```
+
+```{r, fig.width=8, fig.height=4, mund_2, include=TRUE}
+mapCountryData(sPDF, nameColumnToPlot = "Threat", colourPalette=colourPalette, catMethod=c(0,20,40,60,80,100))
+```
+
+```{r, fig.width=8, fig.height=4, mund_3, include=TRUE}
+mapCountryData(sPDF, nameColumnToPlot = "Status", colourPalette=colourPalette, catMethod=c(0,20,40,60,80,100))
+```
+
+### 3.2	De Barras
+
+Este grafico de barras relaciona, cada malware con su threat y su estado:
+
+```{r, fig.width=8, fig.height=4, plot_bar, include=TRUE}
+ggplot(data=df, aes(x=Threat, y=Malware, fill=Status)) + 
+  geom_bar(stat="identity", position="dodge")
+```
+
+### 3.3 Lineal
+
+Este grafico anliza la vida de cada malware:
+
+```{r, fig.width=8, fig.height=4, plot_time, include=TRUE}
+ggplot(df, aes(Firstseen_UTC, Malware)) + 
+  geom_line(aes(color = Malware), size = 1) +
+  theme_minimal()
+```
