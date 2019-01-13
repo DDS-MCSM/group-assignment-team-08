@@ -25,13 +25,13 @@ source("../R/code.R")
 
 ## 2. Datos estructurados
 
-Para obtener un data frame, se utiliza esta funcion:
+Se ha definido la siguiente función para la obtención del data frame con el que se realizará el análisis. Esta función obtiene los datos en formato CSV de la web https://ransomwaretracker.abuse.ch/feeds/csv/. Esta contiene los datos de los malware de tipo ransomware que se han encontrado hasta la fecha, donde nos da información relacionada con su estado, tipo de amenaza, variedad de malware utilizado y país donde se ha localizado.
 
 ```{r get_df}
 df <- obtenerDf()
 ```
 
-Se obtiene un data frame de **`r length(df$Country)`** elementos. Que tienen la siguinete estructura:
+El data frame obtenido será de **`r length(df$Country)`** elementos y dispone de la siguinete estructura:
 
 ```{r, echo=FALSE}
 head(df, n=3)
@@ -39,10 +39,10 @@ head(df, n=3)
 
 ## 3. Figuras
 
-Se mostraran 3 tipos de graficos
+Se mostraran 3 tipos de gráficos
 
 ### 3.1	Mundiales
-Se hace un mach de los paises con los de la biblioteca **joinCountryData2Map**. Pero hay algunos paises que no se hacen bien el mach, puede que sea que la df tenga algun pais que no este correctamente codificado en **ISO2**
+Para realizar el analisis se ha hecho uso de las funciones de la biblioteca **joinCountryData2Map** que nos permite plasmar en un mapa los datos existentes en los paises afectados.
 
 ```{r, fig.width=8, fig.height=4, datos_mund, include=TRUE}
 sPDF <- joinCountryData2Map(df,
@@ -77,9 +77,12 @@ sPDF.un <- joinCountryData2Map(df[df$Status == "unknown",],
 colourPalette <- brewer.pal(5,'RdYlGn')
 ```
 
-Se mostrara tres tipo de graficos mundiales:
+Se mostrarán tres tipo de gráficos mundiales:
 
 #### 3.1.1	Threat
+En los datos se distinguen tres tipos de amenzas C2 (Command & Control) o Botnet, Payment sites, Distribution sites.
+
+A continuación se muestra un mapa con las amenazas situadas en el país donde han sido localizadas. Se observa que predominan las amenazas de C2 en Estados Unidos, Rusia, Francia y Ucrania. Por el contrario las amenazas de Distribution site están más extendidas por America del sur, Canada, la mayor parte de Europa central, Asia y Australia. También se puede observar como en el continente Africano solo se localizan en regiones más desarolladas como por ejemplo Sudafrica y Marruecos.  
 
 ```{r, fig.width=8, fig.height=4, mund_1, include=TRUE}
 mapCountryData(sPDF, nameColumnToPlot = "Threat", mapTitle = "Threat - General", colourPalette=colourPalette)
@@ -87,11 +90,10 @@ mapCountryData(sPDF.ps, nameColumnToPlot = "Threat", mapTitle = "Threat - Paymen
 mapCountryData(sPDF.c2, nameColumnToPlot = "Threat", mapTitle = "Threat - C2", colourPalette=colourPalette)
 mapCountryData(sPDF.ds, nameColumnToPlot = "Threat", mapTitle = "Threat - Distribution Site", colourPalette=colourPalette)
 ```
-Como se puede observar en la imagen clobal Solo aparcen 2 tipos de datos, cunod en realidad existen 3 (las siguentes 3 imagenes que se muestran). No se llego a entender el por que suscede esto se tiene 2 teorias.
-1. Que se dibuje por capas y por lo cual no se muestren alginas
-2. Que en funcion de la proporcion, se decarten los datos que se consideren insignificantes.
 
-Se cree que la razon mas logica es la segunda, esta es la proporcion:
+Pero si analizamos cada una de las amenazas por separado podemos ver donde están albergados en los países a lo largo del mundo. En concreto la amenaza de Payment site está más localizada en Estados Unidos, Centro de Europa y Australia. Comparándola con las de C2 y Distribution site podemos ver que estas dos últimas están muchísimo más extendidas por el mundo, estando localizadas en más y diferentes países.
+
+Tomando la totalidad de los datos por tipo de amenaza se observa como predomina más Distribution site. También hay que remarcar que siempre será sobre los datos conocidos, puesto que cuando se trata de malware y amenazas podrían existir muchos más datos que por ahora son desconocidos.
 
 ```{r, mund_1_tabla, include=TRUE}
 table(df$Threat)
@@ -99,40 +101,40 @@ table(df$Threat)
 
 #### 3.1.2	Status
 
+Otro de los análisis a realizar sobre los datos obtenidos es la del estado en que se encuentran las amenazas. Siendo estas clasificadas en Online para las que están en activo y Offline para las que no lo están. Se puede constatar como en su mayoría han dejado de estar activos, con la excepción de Estados Unidos, que dispone de mayor tasa de amenazas en activo. Creemos que puede deberse a una cuestión de una mayor densidad de población con conocimientos técnicos.
+
+Pero si realizamos un análisis con el estado por separado se descubre como en realidad la disponibilidad de las amenazas se expande a algunas regiones de Europa y Asia y también Rusia. En el caso de los no activos se expanden alrededor del mundo, suponiendo que cuando se descubre una amenaza esta ya no dispone de la efectividad para funcionar debido a que es ampliamente conocida e incluida en la mayoría de listas negras para bloquear su efecto.
+
 ```{r, fig.width=8, fig.height=4, mund_2, include=TRUE}
 mapCountryData(sPDF, nameColumnToPlot = "Status", mapTitle = "Status - General", colourPalette=colourPalette)
 mapCountryData(sPDF.on, nameColumnToPlot = "Status", mapTitle = "Status - online", colourPalette=colourPalette)
 mapCountryData(sPDF.of, nameColumnToPlot = "Status", mapTitle = "Status - offline", colourPalette=colourPalette)
 mapCountryData(sPDF.un, nameColumnToPlot = "Status", mapTitle = "Status - unknown", colourPalette=colourPalette)
 ```
-Ocurre lo mismo que en el grafico anterior.
 
-```{r, mund_2_tabla, include=TRUE}
-table(df$Status)
-```
+#### 3.1.3	Malware
 
-#### 3.1.3	Malaware
+En cuanto al malware existente podemos encontrar GlobeImposter, Locky, PayCrypt, TeslaCrypt. El que más destaca es Locky extendido en casi la totalidad del mapa. Esto es debido a su gran repercusión dentro de los ataques del tipo ransomware por su capacidad de cifrado de todo tipo de datos y su facilidad de camuflarse bajo un fichero word mediante un vector de ataque de ingeniera social por correo electrónico.
 
 ```{r, fig.width=8, fig.height=4, mund_3, include=TRUE}
 mapCountryData(sPDF, nameColumnToPlot = "Malware", colourPalette=colourPalette)
 ```
-En este se nota mas el tema de la proporcionalidad
 
 ```{r, mund_3_tabla, include=TRUE}
 table(df$Malware)
 ```
 ### 3.2	De Barras
 
-Este grafico de barras relaciona, cada malware con su threat y su estado:
+Ademas de poder conocer el estado de las amenazas y del tipo de malware utilizado y su repercusión en el mundo, realizando un gráfico por año y estado de las amenazas destaca como en el año 2016 existe un pico importante de este tipo de ataques. Podemos relacionarlo al gran auge de este tipo de ataques debido a su desconocimiento y a su gran facilidad de infección por la premisa anterior. En su mayoría, y tras todas las noticias aparecidas sobre ellos, afectando a empresas donde los ciberdelicuentes podrían conseguir grandes cantidades de dinero a cambio de devolver los datos sin cifrar. 
 
 ```{r, fig.width=8, fig.height=4, plot_bar, include=TRUE}
-ggplot(data=df, aes(x=Threat, y=Malware, fill=Status)) + 
-  geom_bar(stat="identity", position="dodge")
+ggplot(data=df, aes(x= format(as.Date(Firstseen_UTC), "%Y"), fill=Status)) + 
+  geom_histogram(stat="Count")
 ```
 
 ### 3.3 Lineal
 
-Este grafico anliza la vida de cada malware:
+Por último podemos analizar la vida de los tipos de malware, existentes en los datos, durante el tiempo. Los más destacados Locky y CryptoWall por su facilidad de infección y facilidad de engaño al usuario. 
 
 ```{r, fig.width=8, fig.height=4, plot_time, include=TRUE}
 ggplot(df, aes(Firstseen_UTC, Malware)) + 

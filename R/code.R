@@ -29,5 +29,7 @@ obtenerDf <- function(){
   
   dataFinal <- dataFinal[!apply(dataFinal, 1, function(x) any(x=="")),]
   dataFinal <- dataFinal[!is.na(dataFinal$Firstseen_UTC),]
+  dataFinal <- dataFinal[-grep(x = dataFinal$Country, pattern = "EU"), ]
   return(dataFinal)
 }
+
